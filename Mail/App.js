@@ -8,17 +8,17 @@ var transporter = nodemailer.createTransport({
     port: 465, // SMTP 端口
     secureConnection: true, // 使用 SSL
     auth: {
-        user: 'shujia.wu@huochaicf.com',
+        user: '',
         //这里密码不是qq密码，是你设置的smtp密码
-        pass: 'Wushujia@2929862'
+        pass: ''
     }
 });
 
 // setup e-mail data with unicode symbols
 var mailOptions = {
-    from: 'shujia.wu<shujia.wu@huochaicf.com>', // 发件地址
-    to: '120820415@qq.com', // 收件列表
-    subject: '【标题】', // 标题
+    from: '', // 发件地址
+    to: '', // 收件列表
+    subject: '', // 标题
     //text和html两者只支持一种
     html: '<b>Hello world ?</b>' // html 内容
 };
