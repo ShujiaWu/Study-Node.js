@@ -1,6 +1,7 @@
 /**
  * Created by Yun on 2016/12/29.
  */
+var path = require('path');
 var fs = require('fs');
 var _ = require('lodash');
 var nodemailer = require('nodemailer');
@@ -38,6 +39,32 @@ function zeroize(value, length) {
     return zeros + value;
 }
 
+function isFileInFilter(fileFullPath) {
+    var relativePath = path.relative(config.task.target, fileFullPath);
+    for (var i = 0; i < config.filter.ext.length; i++) {
+        if (relativePath.endsWith(config.filter.ext[i])) {
+            console.log(getDateTime(), '\t', '过滤文件：', fileFullPath);
+            return true;
+        }
+    }
+    for (var i = 0; i < config.filter.file.length; i++) {
+        if (relativePath.endsWith(config.filter.file[i])) {
+            console.log(getDateTime(), '\t', '过滤文件：', fileFullPath);
+            return true;
+        }
+    }
+    return false;
+}
+
+function isFolderInFilter(fileFullPath) {
+    for (var i = 0; i < config.filter.folder.length; i++) {
+        if (path.resolve(config.task.target, config.filter.folder[i]) == fileFullPath) {
+            console.log(getDateTime(), '\t', '过滤文件夹：', fileFullPath);
+            return true;
+        }
+    }
+}
+
 var isReadyForWatch = false;
 var changeList = [];
 var value;
@@ -50,7 +77,7 @@ watcher
         isReadyForWatch = true;
     })
     .on('addDir', function (path) {
-        if (isReadyForWatch) {
+        if (isReadyForWatch && !isFolderInFilter(path)) {
             value = getDateTime() + '\t【添加-目录】' + path;
             console.log(value);
             changeList.push({
@@ -61,7 +88,7 @@ watcher
 
     })
     .on('unlinkDir', function (path) {
-        if (isReadyForWatch) {
+        if (isReadyForWatch && !isFolderInFilter(path)) {
             value = getDateTime() + '\t【删除-目录】' + path;
             console.log(value);
             changeList.push({
@@ -71,7 +98,7 @@ watcher
         }
     })
     .on('add', function (path) {
-        if (isReadyForWatch) {
+        if (isReadyForWatch && !isFileInFilter(path)) {
             value = getDateTime() + '\t【添加-文件】' + path;
             console.log(value);
             changeList.push({
@@ -81,7 +108,7 @@ watcher
         }
     })
     .on('change', function (path) {
-        if (isReadyForWatch) {
+        if (isReadyForWatch && !isFileInFilter(path)) {
             value = getDateTime() + '\t【更改-文件】' + path;
             console.log(value);
             changeList.push({
@@ -91,7 +118,7 @@ watcher
         }
     })
     .on('unlink', function (path) {
-        if (isReadyForWatch) {
+        if (isReadyForWatch && !isFileInFilter(path)) {
             value = getDateTime() + '\t【删除-文件】' + path;
             console.log(value);
             changeList.push({

@@ -13,7 +13,12 @@ module.exports = {
     },
     task: {
         updateType: 1,  //监视的类型，0，定时监视 1：文件更改后定时发送
-        interval: 6 * 1000,  //时间
-        target: '' //这里填写的是要监视的路径
+        interval: 3 * 60 * 1000,  //时间
+        target: 'D:/Desktop/素材' //这里填写的是要监视的路径
+    },
+    filter: {
+        ext: [],
+        folder: [],
+        file: ['.DS_Store', 'Thumbs.db']
     }
 };
